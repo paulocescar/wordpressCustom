@@ -656,86 +656,183 @@ function twentytwentyone_add_ie_class()
 }
 add_action('wp_footer', 'twentytwentyone_add_ie_class');
 
-function create_product_post_type()
-{
-	register_post_type(
-		'product',
-		array(
-			'labels' => array(
-				'name' => __('Products'),
-				'singular_name' => __('Product')
-			),
-			'public' => true,
-			'has_archive' => true,
-            'template' => array('single-product.php'),
-            'single_template' => 'single-product.php',
-		)
-	);
-}
-add_action('init', 'create_product_post_type');
+///////////////categorias
+	function create_category_post_type()
+	{
+		register_post_type(
+			'category',
+			array(
+				'labels' => array(
+					'name' => __('Categories'),
+					'singular_name' => __('Category')
+				),
+				'public' => true,
+				'has_archive' => true,
+				'template' => array('single-category.php'),
+				'single_template' => 'single-category.php',
+			)
+		);
+	}
+	add_action('init', 'create_category_post_type');
 
-function add_product_meta_boxes()
-{
-	add_meta_box('product_meta_box', 'Product Details', 'display_product_meta_box', 'product', 'normal', 'high');
-}
-add_action('add_meta_boxes', 'add_product_meta_boxes');
+	function add_category_meta_boxes()
+	{
+		add_meta_box('category_meta_box', 'Category Details', 'display_category_meta_box', 'category', 'normal', 'high');
+	}
+	add_action('add_meta_boxes', 'add_category_meta_boxes');
 
-function display_product_meta_box($post)
-{
-	$title = get_post_meta($post->ID, 'title', true);
-	$quantity = get_post_meta($post->ID, 'quantity', true);
-	$description = get_post_meta($post->ID, 'description', true);
-	$price = get_post_meta($post->ID, 'price', true);
-	$image = get_post_meta($post->ID, 'image', true);
-?>
-	<table>
-		<tr>
-			<td style="width: 100px">Title</td>
-			<td><input type="text" name="title" value="<?php echo esc_attr($title); ?>" style="width: 100%"></td>
-		</tr>
-		<tr>
-			<td style="width: 100px">Description</td>
-			<td>
-				<textarea name="description"  style="width: 100%"><?php echo esc_attr($description); ?></textarea>
-				<!-- <input type="text" name="description" value="<?php echo esc_attr($description); ?>" style="width: 100%"> -->
-			</td>
-		</tr>
-		<tr>
-			<td style="width: 100px">Quantity</td>
-			<td><input type="text" name="quantity" value="<?php echo esc_attr($quantity); ?>" style="width: 100%"></td>
-		</tr>
-		<tr>
-			<td style="width: 100px">Price</td>
-			<td><input type="text" name="price" value="<?php echo esc_attr($price); ?>" style="width: 100%"></td>
-		</tr>
-		<tr>
-			<td style="width: 100px">Image</td>
-			<td><input type="text" name="image" value="<?php echo esc_attr($image); ?>" style="width: 100%"></td>
-		</tr>
-	</table>
-<?php
-}
-add_action('save_post', 'save_product_meta_box');
+	function display_category_meta_box($post)
+	{
+		$title = get_post_meta($post->ID, 'title', true);
+		$description = get_post_meta($post->ID, 'description', true);
+		$image = get_post_meta($post->ID, 'image', true);
+	?>
+		<table>
+			<tr>
+				<td style="width: 100px">Title</td>
+				<td><input type="text" name="title" value="<?php echo esc_attr($title); ?>" style="width: 100%"></td>
+			</tr>
+			<tr>
+				<td style="width: 100px">Description</td>
+				<td>
+					<textarea name="description" style="width: 100%"><?php echo esc_attr($description); ?></textarea>
+					<!-- <input type="text" name="description" value="<?php echo esc_attr($description); ?>" style="width: 100%"> -->
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 100px">Image</td>
+				<td><input type="text" name="image" value="<?php echo esc_attr($image); ?>" style="width: 100%"></td>
+			</tr>
+		</table>
+	<?php
+	}
+	add_action('save_post', 'save_category_meta_box');
 
-function save_product_meta_box($post_id)
-{
-	if (array_key_exists('title', $_POST)) {
-		update_post_meta($post_id, 'title', $_POST['title']);
+	function save_category_meta_box($post_id)
+	{
+		if (array_key_exists('title', $_POST)) {
+			update_post_meta($post_id, 'title', $_POST['title']);
+		}
+		if (array_key_exists('description', $_POST)) {
+			update_post_meta($post_id, 'description', $_POST['description']);
+		}
+		if (array_key_exists('image', $_POST)) {
+			update_post_meta($post_id, 'image', $_POST['image']);
+		}
 	}
-	if (array_key_exists('quantity', $_POST)) {
-		update_post_meta($post_id, 'quantity', $_POST['quantity']);
+	add_action('save_post', 'save_category_meta_box');
+///////////////categorias
+
+///////////////produtos
+	function create_product_post_type()
+	{
+		register_post_type(
+			'product',
+			array(
+				'labels' => array(
+					'name' => __('Products'),
+					'singular_name' => __('Product')
+				),
+				'public' => true,
+				'has_archive' => true,
+				'template' => array('single-product.php'),
+				'single_template' => 'single-product.php',
+			)
+		);
 	}
-	if (array_key_exists('description', $_POST)) {
-		update_post_meta($post_id, 'description', $_POST['description']);
+	add_action('init', 'create_product_post_type');
+
+	function add_product_meta_boxes()
+	{
+		add_meta_box('product_meta_box', 'Product Details', 'display_product_meta_box', 'product', 'normal', 'high');
 	}
-	if (array_key_exists('price', $_POST)) {
-		update_post_meta($post_id, 'price', $_POST['price']);
+	add_action('add_meta_boxes', 'add_product_meta_boxes');
+
+	function display_product_meta_box($post)
+	{
+		$title = get_post_meta($post->ID, 'title', true);
+		$quantity = get_post_meta($post->ID, 'quantity', true);
+		$description = get_post_meta($post->ID, 'description', true);
+		$category_id = get_post_meta($post->ID, 'category_id', true);
+		$price = get_post_meta($post->ID, 'price', true);
+		$image = get_post_meta($post->ID, 'image', true);
+	?>
+		<table>
+			<tr>
+				<td style="width: 100px">Title</td>
+				<td><input type="text" name="title" value="<?php echo esc_attr($title); ?>" style="width: 100%"></td>
+			</tr>
+			<tr>
+				<td style="width: 100px">Description</td>
+				<td>
+					<textarea name="description" style="width: 100%"><?php echo esc_attr($description); ?></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 100px">Category</td>
+				<td>
+					<select name="category_id" style="width: 100%;">
+						<option value="">Selecione</option>
+						<?php
+						$categories = custom_categories_cpt_querys();
+						if (have_posts()) :
+							while (have_posts()) :
+								the_post();
+								$title = get_post_meta(get_the_ID(), 'title', true);
+								$description = get_post_meta(get_the_ID(), 'description', true);
+								if(get_the_ID() != 1){
+									$selected = ($category_id == get_the_ID()) ? 'selected' : '';
+									echo '<option value="' . esc_attr(get_the_ID()) . '" ' . $selected . '>' . esc_html($title) . '</option>';
+								}
+							endwhile;
+						endif;
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 100px">Quantity</td>
+				<td><input type="text" name="quantity" value="<?php echo esc_attr($quantity); ?>" style="width: 100%"></td>
+			</tr>
+			<tr>
+				<td style="width: 100px">Price</td>
+				<td><input type="text" name="price" value="<?php echo esc_attr($price); ?>" style="width: 100%"></td>
+			</tr>
+			<tr>
+				<td style="width: 100px">Image</td>
+				<td>
+					<input type="text" name="image" value="<?php echo esc_attr($image); ?>" style="width: 100%">
+					<img src="<?php echo esc_attr($image); ?>" style="width: auto; height:150px;" />
+				</td>
+			</tr>
+		</table>
+	<?php
 	}
-	if (array_key_exists('image', $_POST)) {
-		update_post_meta($post_id, 'image', $_POST['image']);
+	add_action('save_post', 'save_product_meta_box');
+
+	function save_product_meta_box($post_id)
+	{
+		if (array_key_exists('title', $_POST)) {
+			update_post_meta($post_id, 'title', $_POST['title']);
+		}
+		if (array_key_exists('quantity', $_POST)) {
+			update_post_meta($post_id, 'quantity', $_POST['quantity']);
+		}
+		if (array_key_exists('category_id', $_POST)) {
+			update_post_meta($post_id, 'category_id', $_POST['category_id']);
+		}
+		if (array_key_exists('description', $_POST)) {
+			update_post_meta($post_id, 'description', $_POST['description']);
+		}
+		if (array_key_exists('price', $_POST)) {
+			update_post_meta($post_id, 'price', $_POST['price']);
+		}
+		if (array_key_exists('image', $_POST)) {
+			update_post_meta($post_id, 'image', $_POST['image']);
+		}
 	}
-}
-add_action('save_post', 'save_product_meta_box');
+	add_action('save_post', 'save_product_meta_box');
+///////////////produtos
 
 if (!function_exists('wp_get_list_item_separator')) :
 	/**

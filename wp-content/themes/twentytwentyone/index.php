@@ -26,8 +26,21 @@ get_header(); ?>
 	h2 {
 		font-size: 2rem;
 	}
+	.catgory-list {
+		list-style: none;
+	}
+
+	.catgory-list li {
+		width: 200px;
+		cursor: pointer;
+	}
+
+	.catgory-list li:hover {
+		background-color: rgba(255,255,255,.5);
+	}
+
 	.product-slider {
-		width: 80%;
+		width: 100%;
 		height: 400px;
 		display: flex;
 		overflow-x: auto;
@@ -65,13 +78,12 @@ get_header(); ?>
 	}
 
 	.site-main	{
-		overflow-x: scroll;
 		margin: 0 !important;
 		padding: 0 !important;
 	}
 
 	.site-main > * {
-		margin: 0 10% !important;
+		margin: 0 !important;
 		padding: 0 !important;
 	}
 
@@ -112,34 +124,57 @@ get_header(); ?>
 		}
 	}
 </style>
-
-<div class="product-slider" style="overflow-x: scroll;">
+<div class="container">
+  <div class="left-section" style="float: left; width: 20%;">
+  <!-- Conteúdo da seção da esquerda (categorias) -->
+  <ul class="catgory-list">
 	<?php
-
-	// If no content, include the "No posts found" template.
-	custom_products_querys();
-	if (have_posts()) :
-		while (have_posts()) :
-			the_post();
-			// exibir o conteúdo do produto aqui
-			$title = get_post_meta(get_the_ID(), 'title', true);
-			$slug = get_post_meta(get_the_ID(), 'slug', true);
-			$image = get_post_meta(get_the_ID(), 'image', true);
-			$quantity = get_post_meta(get_the_ID(), 'quantity', true);
-			$description = get_post_meta(get_the_ID(), 'description', true);
-			$price = get_post_meta(get_the_ID(), 'price', true);
+		$categories = custom_categories_cpt_querys();
+		if (have_posts()) :
+			while (have_posts()) :
+				the_post();
+				$title = get_post_meta(get_the_ID(), 'title', true);
+				$slug = get_post_meta(get_the_ID(), 'slug', true);
+				$image = get_post_meta(get_the_ID(), 'image', true);
+				$description = get_post_meta(get_the_ID(), 'description', true);
+				if(get_the_ID() != 1){
+					echo '<a href="/?post_type=category&p='.esc_html(get_the_ID()).'&preview=true"><li>' . esc_html($title) . '</li></a>';
+				}
+			endwhile;
+		endif;
 	?>
-			<div class="product-card">
-				<img src="<?php echo $image; ?>" alt="<?php echo $title; ?>">
-				<h2><?php echo $title; ?></h2>
-				<span class="product-price"><?php echo $price; ?></span><br>
-				<button class="buy-button">Comprar</button><br>
-				<a class="btn" href="/?product=<?php echo str_replace(" ", "-", $title); ?>">Detalhe</a>
-			</div>
-			<!-- Adicione mais cards de produtos aqui -->
+  </ul>
+  </div>
+  <div class="right-section" style="float: left; width: 80%;">
+    <!-- Conteúdo da seção da direita (produtos) -->
+	<div class="product-slider">
 		<?php
-		endwhile;
+
+		// If no content, include the "No posts found" template.
+		custom_products_querys();
+		if (have_posts()) :
+			while (have_posts()) :
+				the_post();
+				// exibir o conteúdo do produto aqui
+				$title = get_post_meta(get_the_ID(), 'title', true);
+				$slug = get_post_meta(get_the_ID(), 'slug', true);
+				$image = get_post_meta(get_the_ID(), 'image', true);
+				$quantity = get_post_meta(get_the_ID(), 'quantity', true);
+				$description = get_post_meta(get_the_ID(), 'description', true);
+				$price = get_post_meta(get_the_ID(), 'price', true);
 		?>
+				<div class="product-card">
+					<img src="<?php echo $image; ?>" alt="<?php echo $title; ?>">
+					<h2><?php echo $title; ?></h2>
+					<span class="product-price"><?php echo $price; ?></span><br>
+					<button class="buy-button">Comprar</button><br>
+					<a class="btn" href="/?product=<?php echo str_replace(" ", "-", $title); ?>">Detalhe</a>
+				</div>
+				<!-- Adicione mais cards de produtos aqui -->
+			<?php
+			endwhile;
+			?>
+	</div>
 </div>
 <?php
 	else :
